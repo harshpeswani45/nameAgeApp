@@ -2,102 +2,117 @@ var express = require('express');
 var usermodels=require('../models/usermodels')
 var router = express.Router();
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index')
+  //res.render('index')
+  console.log("Hello")
+  res.end()
 });
-router.all('/addInfo',function(req,res){
-  if(req.method =='GET')
-    res.render('addInfo',{message:''})
-  else{
+router.post('/addInfo',function(req,res){
+  
       name=req.body.name
       age=req.body.age
-      usermodels.addInfo('Information',name,age,function(result){
+      console.log(name)
+      usermodels.addInfo(name,age,function(result){
         if(result)
-              res.render('addInfo',{message:'Success'})
+              console.log('Success')
       
       })
-    }
+      res.end()
+    
 
 })
 router.get('/showInfo',function(req,res){
-  usermodels.showInfo('Information',function(result){
-    if(result)
-        res.render('showInfo',{result:result})
+  
+  console.log(usermodels.con)
 
-})
-})
-
-router.all('/deleteInfo',function(req,res){
-      if(req.method=='GET')
-        res.render('deleteInfo',{message:''})
-      else{
-        var name=req.body.name
-        usermodels.deleteInfo('Information',name,function(result){
+  usermodels.showInfo(usermodels.con,function(result){
           if(result)
-            res.render('deleteInfo',{message:'Success'})
-        })
-      }
+          {
+            console.log(result)
+            res.end(JSON.stringify(result))
+          }
+    })
+    
 })
-router.all('/updateInfo',function(req,res){
-  if(req.method =='GET')
-    res.render('updateInfo',{message:''})
-  else{
+
+router.delete('/deleteInfo/:id',function(req,res){
+      
+        var name=req.params.id
+        usermodels.deleteInfo(usermodels.con,name,function(result){
+          if(result)
+            console.log('Success')
+          else  
+            console.log('Not Succesful')
+        })
+        res.end()
+      
+})
+router.post('/updateInfo',function(req,res){
+  
       prev=req.body.prev      
       newname =req.body.new
-      usermodels.updateInfo('Information',prev,newname,function(result){
+      usermodels.updateInfo(usermodels.con,prev,newname,function(result){
         if(result)
-              res.render('updateInfo',{message:'Success'})
+              console.log('Success')
+        else
+          console.log('Name Doesnt Exist')
       
       })
-    }
-
+    
+      res.end()
 })
-router.all('/addName',function(req,res){
-  if(req.method =='GET')
-    res.render('addName',{message:''})
-  else{
+router.post('/addName',function(req,res){
+   
       name=req.body.name
-      usermodels.addName('infoName',name,function(result){
+      usermodels.addName(name,function(result){
         if(result)
-              res.render('addName',{message:'Success'})
+              console.log('Success')
       
       })
-    }
+      res.end()
 
 })
 router.get('/showName',function(req,res){
-  usermodels.showInfo('infoName',function(result){
+  
+  usermodels.showInfo(usermodels.con1,function(result){
     if(result)
-        res.render('showName',{result:result})
-
+    {
+        console.log(JSON.stringify(result))
+        res.end(JSON.stringify(result))
+    }
+    
+        res.end()
 })
 })
 
-router.all('/updateName',function(req,res){
-  if(req.method =='GET')
-    res.render('updateName',{message:''})
-  else{
+router.post('/updateName',function(req,res){
+  
       prev=req.body.prev      
       newname =req.body.new
-      usermodels.updateInfo('infoName',prev,newname,function(result){
+      usermodels.updateInfo(usermodels.con1,prev,newname,function(result){
         if(result)
-              res.render('updateName',{message:'Success'})
-      
+            console.log('Success')
+        else
+          console.log('Unsuccesful')
       })
-    }
+      res.end()
 
 })
 
-router.all('/deleteName',function(req,res){
-  if(req.method=='GET')
-    res.render('deleteName',{message:''})
-  else{
-    var name=req.body.name
-    usermodels.deleteInfo('infoName',name,function(result){
+router.delete('/deleteName/:id',function(req,res){
+  
+    var name=req.params.id
+    usermodels.deleteInfo(usermodels.con1,name,function(result){
       if(result)
-        res.render('deleteName',{message:'Success'})
+        console.log('Success')
+      else
+        console.log('Not Success')
+        
+        res.end()
+
     })
-  }
+  
 })
 module.exports = router;

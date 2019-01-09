@@ -1,59 +1,52 @@
 var con = require('./conn')
+var con1 = require('./conn1')
 
-function addInfo(tablename,name,age,cb){
-  var query = "insert into "+tablename+" values('"+name+"',"+age+")"
+function addInfo(name,age,cb){
   
-  con.query(query,function(err,result){
-    if(err)
-      console.log(err)
-    else
-      cb(result)
-  })
+  con.push({ 'Name':name,'Age':age})
+  cb(true)
+  
 
 }
-function showInfo(tablename,cb){
-  var query = "select * from "+tablename
-  con.query(query,function(err,result){
-    if(err)
-      console.log(err)
-    else
-      cb(result)
-  })
+function showInfo(data,cb){
+      //console.log(data)
+      cb(data)
+  
 }
 
-function deleteInfo(tablename,name,cb){
-  var query = "delete from "+tablename+" where Name='"+name+"'"
-  con.query(query,function(err,result){
-    if(err)
-      console.log(err)
-    else
-      cb(result)
-  })
-}
-function updateInfo(tablename,prevname,newname,cb){
-  var query = "update "+tablename+" set Name = '"+newname+"' where Name='"+prevname+"'"
-  console.log(query)
-  con.query(query,function(err,result){
-    if(err)
-      console.log(err)
-    else
-      cb(result)
-  })
+function deleteInfo(data,name,cb){ 
+  for(var i in data){
+    
+    if(data[i].Name==name)
+    {
+          data.splice(i,1)
+          cb(true)
+    }
+    else  
+      cb(false)
+  
+  }
 }
 
-function addName(tablename,name,cb){
-  var query = "insert into "+tablename+" values('"+name+"')"
-  console.log(query)
-  con.query(query,function(err,result){
-    if(err)
-      console.log(err)
-    else
-      cb(result)
-  })
+function updateInfo(data,prevname,newname,cb){
+  for(var i in data){
+    if(data[i].Name==prevname)
+    {
+          data[i].Name = newname
+          cb(true)
+    }  
+
+}
+}
+
+function addName(name,cb){
+  con1.push({ 'Name':name})
+  cb(true)
+  
 }
 
 
 
 
 
-module.exports={addInfo:addInfo,showInfo:showInfo,deleteInfo:deleteInfo,updateInfo:updateInfo,addName:addName}
+module.exports={addInfo:addInfo,showInfo:showInfo,deleteInfo:deleteInfo,updateInfo:updateInfo,addName:addName,con:con,con1:con1}
